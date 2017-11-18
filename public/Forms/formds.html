@@ -1,0 +1,131 @@
+<link href="/assets/css/styles.css" rel="stylesheet">
+
+<div id="mySidenav" class="sidenav">
+
+ <a href="#" class='dragme' id="textbox">formds  </a>
+ <input type="textbox" id="form_id" value="21" hidden>
+  
+</div>
+<div class="success" id='msgdiv' style="display:none">
+   <center id='msg'>
+    <i class="fa fa-info-circle"></i>
+    </center>
+</div>
+<div id="Container">
+
+<form action="" method="post" id="myForm" > 
+<div id="textbox_1" class="ui-draggable ui-draggable-handle ui-draggable-disabled" style="position: relative;">1 &nbsp;  <label class="textbox_1ele" style="display: inline-block;">&nbsp;Name</label><input type="text" name="textbox" class="textbox_1ele" id="textbox_1ele" value="" style="display: inline-block;"></div><div id="button_1" class="ui-draggable ui-draggable-handle ui-draggable-disabled" style="position: relative;">1 &nbsp;<input type="button" name="button" class="button_1ele button" id="button_1ele" value="submit" style="display: inline-block;"></div>
+</form>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$("#button_1ele").click(function() {
+    
+    
+
+ids = $('#myform input[id]').map(function() {
+  return this.id;
+}).get();
+
+var files=[];
+var k=0;
+var fileUploadExist=false;
+var queryData='form_id='+$("#form_id").val()+"&";
+for (var i = 0; i <ids.length; i++) 
+{
+	if(ids[i].includes("button"))
+	{
+		continue;
+	}
+	
+	if(ids[i].includes("fileupload"))
+	{
+		files.push(ids[i]);	
+		fileUploadExist=true;
+		//console.log(ids[i]);
+			    
+	}
+	else
+	{
+		queryData+=ids[i]+"="+$('#'+ids[i]).val()+'&';
+	}
+	
+}
+
+
+if(!fileUploadExist)
+{
+ $.ajax({
+            type: 'GET',
+            url: window.location.origin+'/api/addData?'+queryData,
+            contentType: "application/json",
+            complete:function(msgresponse)
+            {
+               if(msgresponse.responseJSON.response=='success')
+                {
+                    $('#msg').html("Data added successfully");
+                    $('#msgdiv').show().fadeIn('slow');
+
+                    $('#msgdiv').delay(3000).fadeOut('slow');
+
+                   
+
+                }
+                else
+                {
+                    $('#msg').html(msgresponse.responseJSON.msg).fadeIn('slow');
+
+                    $('#msg').delay(5000).fadeOut('slow');
+                }
+            },
+            error:function()
+            {
+               
+            }
+
+                
+        });
+
+ }
+ else{
+
+		  var form_data = new FormData();    
+		     
+		  
+		  for (var i = 0; i <files.length; i++) 
+		  {
+					form_data.append("file", $('#'+files[i]).prop('files')[0]); 		  		
+		  }
+		  form_data.append("data",queryData);
+  			$.ajax({
+			                url: window.location.origin+'/api/fileuploader', // point to server-side PHP script 
+			                dataType: 'json',  // what to expect back from the PHP script, if anything
+			                cache: false,
+			                contentType: false,
+			                processData: false,
+			                data: form_data,                         
+			                type: 'post',
+			                success: function(msgresponse){
+			                	if(msgresponse.responseJSON.response=='success')
+                {
+                    $('#msg').html("Data added successfully");
+                    $('#msgdiv').show().fadeIn('slow');
+
+                    $('#msgdiv').delay(3000).fadeOut('slow');
+
+                   
+
+                }
+                else
+                {
+                    $('#msg').html(msgresponse.responseJSON.msg).fadeIn('slow');
+
+                    $('#msg').delay(5000).fadeOut('slow');
+                }
+			                }
+			     });
+  		}
+
+});
+
+</script>
