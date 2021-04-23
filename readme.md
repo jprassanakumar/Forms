@@ -1,3 +1,8 @@
+POC of google forms where users can drag & drop and create forms. The data filled in forms can be seen on an admin page.
+Used PHP with laravel for developing this web application.  Mysql for storing data entered and component structure.
+
+
+
 # Laravel PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
